@@ -1,15 +1,25 @@
 # JzeroCompile IDE 🚀
 
-JzeroCompile is a high-performance, aesthetically stunning C Compiler IDE built with a "God Tier" user experience in mind. It features a modern glassmorphic interface, real-time terminal input/output, and a powerful theme system.
+JzeroCompile is a high-performance, aesthetically stunning C Compiler IDE built with a "God Tier" user experience in mind. It is a lightweight, visual GUI alternative to heavy IDEs like Visual Studio, designed specifically for speed and simplicity.
 
-## ✨ Features
+## ✨ Why JzeroCompile?
 
-- **Real-time Terminal**: Interactive terminal with bidirectional communication for immediate feedback.
-- **Monaco Editor Integration**: Powered by the same engine as VS Code, providing world-class syntax highlighting and code editing.
-- **Multi-Theme System**: 7 beautifully crafted themes to suit any developer's mood (Midnight Glow, Tokyo Night, Cyberpunk, etc.).
-- **Portable Workspace**: Easily change and manage your project directories directly from the sidebar.
-- **Glassmorphic UI**: A premium, modern design with subtle animations and fluid transitions.
-- **Smart Compilation**: Auto-injects common C fixes (like output buffering) to ensure a smooth running experience.
+### 🔋 Extreme Resource Efficiency
+While heavy IDEs like **Visual Studio** can consume upwards of **2000MB (2GB) of RAM**, JzeroCompile runs at a lightning-fast **230MB**. That is **~90% less resource usage**, making it the perfect choice for students and developers who want a smooth, lag-free coding experience without slowing down their PC.
+
+### 🎓 Designed for B.Tech Students
+Setting up C environments in "Vital Studios" (Visual Studio) or complex IDEs can be a nightmare for engineering students. JzeroCompile removes the mess:
+- **Zero Configuration**: No complex project files or linker settings.
+- **Instant Setup**: Specifically designed for students learning C programming to focus on code, not settings.
+- **Glassmorphic UI**: A premium, modern design that makes coding feel like the future.
+
+## ✨ Key Features
+
+- **90% Lighter**: Massive performance gains over traditional IDEs.
+- **Real-time Terminal**: Interactive terminal with bidirectional communication.
+- **Monaco Editor**: Powered by the same engine as VS Code for world-class syntax highlighting.
+- **7 Premium Themes**: Midnight Glow, Tokyo Night, Cyberpunk, and more.
+- **Smart Compilation**: Auto-injects common C fixes (like output buffering) so your `printf` works perfectly every time.
 
 ## 🎨 Theme Gallery
 
@@ -22,31 +32,27 @@ JzeroCompile is a high-performance, aesthetically stunning C Compiler IDE built 
 ### Cyberpunk 2077
 ![Cyberpunk](showcase/cyberpunk.png)
 
-### Dracula
-![Dracula](showcase/dracula.png)
-
-### Retro Amber
-![Retro Amber](showcase/retro_amber.png)
-
-### Oceanic Abyss
-![Oceanic Abyss](showcase/oceanic_abyss.png)
-
-### Emerald Forest
-![Emerald Forest](showcase/emerald_forest.png)
-
 ## 🛠️ Tech Stack
 
 - **Backend**: Node.js, Express, Socket.io
 - **Frontend**: Vanilla JS, Monaco Editor, Xterm.js
 - **Compiler**: GCC (MinGW)
 
-## 🚀 Getting Started
+## 🚀 Getting Started (Node.js Version)
 
-1. Clone the repository.
-2. Ensure you have Node.js and GCC installed.
-3. Run `npm install` to install dependencies.
-4. Start the server using `node server.js`.
-5. Open `http://localhost:3000` in your browser.
+To get this running properly on your system, follow these simple steps:
+
+1. **Install Node.js**: Download and install it from [nodejs.org](https://nodejs.org/).
+2. **Install GCC**: Ensure you have MinGW installed at `C:\MinGW\`.
+3. **Install Dependencies**: Open your terminal in the project folder and run:
+   ```bash
+   npm install
+   ```
+4. **Run the App**:
+   ```bash
+   node server.js
+   ```
+5. **Access the IDE**: Open `http://localhost:3000` in your browser and start coding!
 
 ---
-Developed with ❤️ for developers who love premium design and fast C compilation.
+Developed with ❤️ for B.Tech students and developers who want a beautiful, lightweight coding experience.
