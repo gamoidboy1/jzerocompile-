@@ -1,0 +1,8 @@
+node_modules/
+dist/
+temp.c
+temp.exe
+*.log
+build_log.txt
+build_log_v2.txt
+.DS_Store
