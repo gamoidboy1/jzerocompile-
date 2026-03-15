@@ -29,9 +29,6 @@ Setting up C environments in VS Code or complex IDEs can be a nightmare for engi
 ### Midnight Glow (Default)
 ![Midnight Glow](showcase/midnight_glow.png)
 
-### Nordic White
-![Nordic White](showcase/nordic_white.png)
-
 ### Tokyo Night
 ![Tokyo Night](showcase/tokyo_night.png)
 
