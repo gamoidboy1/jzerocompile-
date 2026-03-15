@@ -13,6 +13,7 @@
 
 
 <body>
+    <div id="save-indicator" class="save-indicator">Saved</div>
     <div class="app-container">
         <header class="navbar">
             <div class="logo">
@@ -50,31 +51,12 @@
                                 <input type="range" id="setting-line-height" min="1" max="3" step="0.1" value="1.5"
                                     style="cursor: pointer; accent-color: var(--accent);">
                             </div>
-                            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                                <span>Font Family</span>
-                                <select id="setting-font-family"
-                                    style="width: 100%; padding: 0.5rem; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 6px; color: white; outline: none; font-family: inherit; cursor: pointer;">
-                                    <option value="'Fira Code', monospace" style="font-family: 'Fira Code';">Fira Code
-                                    </option>
-                                    <option value="'JetBrains Mono', monospace" style="font-family: 'JetBrains Mono';">
-                                        JetBrains Mono</option>
-                                    <option value="'Source Code Pro', monospace"
-                                        style="font-family: 'Source Code Pro';">Source Code Pro</option>
-                                    <option value="'Roboto Mono', monospace" style="font-family: 'Roboto Mono';">Roboto
-                                        Mono</option>
-                                    <option value="'Ubuntu Mono', monospace" style="font-family: 'Ubuntu Mono';">Ubuntu
-                                        Mono</option>
-                                    <option value="'Space Mono', monospace" style="font-family: 'Space Mono';">Space
-                                        Mono</option>
-                                    <option value="'Courier New', monospace" style="font-family: 'Courier New';">Classic
-                                        Courier</option>
-                                </select>
-
-                            </div>
+                            <!-- Font Family locked to Source Code Pro by user request -->
                         </div>
                     </div>
-
                 </div>
+
+
 
                 <div style="position: relative;">
                     <button id="toggle-themes" class="icon-btn" title="Appearance">
@@ -107,7 +89,7 @@
                                     </path>
                                     <path d="M19 9a7 7 0 0 1-7 7"></path>
                                 </svg>
-                                <span>Emerald Forest</span>
+                                <span>Nordic White</span>
                             </div>
                             <div class="theme-option" data-theme="cyberpunk">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -126,13 +108,14 @@
                                 </svg>
                                 <span>Tokyo Night</span>
                             </div>
-                            <div class="theme-option" data-theme="dracula">
+                            <div class="theme-option" data-theme="oled">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
                                     style="margin-right:8px;">
-                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <circle cx="12" cy="12" r="3"></circle>
                                 </svg>
-                                <span>Dracula</span>
+                                <span>Oled Luxe</span>
                             </div>
                             <div class="theme-option" data-theme="retro">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -250,7 +233,9 @@
     <div id="custom-modal" class="modal-overlay">
         <div class="modal-dialog">
             <div class="modal-title" id="modal-title">Enter value:</div>
-            <input type="text" class="modal-input" id="modal-input" />
+            <div style="display: flex; gap: 0.5rem; width: 100%; align-items: stretch;">
+                <input type="text" class="modal-input" id="modal-input" style="flex: 1;" />
+            </div>
             <div class="modal-actions">
                 <button class="modal-btn cancel" id="modal-cancel">Cancel</button>
                 <button class="modal-btn submit" id="modal-submit">Confirm</button>
@@ -270,9 +255,25 @@
                         style="width: 18px; height: 18px; cursor: pointer;">
                 </div>
 
+                <div style="border-top: 1px solid var(--border); padding-top: 1rem; margin-top: 0.5rem;">
+                    <span style="font-size: 0.8rem; opacity: 0.7; letter-spacing: 1px; display: block; margin-bottom: 0.75rem;">KEYBOARD SHORTCUTS</span>
+                    <div style="display: grid; grid-template-columns: auto 1fr; gap: 0.75rem; font-size: 0.85rem;">
+                        <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-family: monospace; color: var(--accent); text-align: center;">F5</kbd>
+                        <span>Compile & Run</span>
+                        
+                        <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-family: monospace; color: var(--accent); text-align: center;">Ctrl + B</kbd>
+                        <span>Toggle Explorer</span>
 
+                        <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-family: monospace; color: var(--accent); text-align: center;">Ctrl + S</kbd>
+                        <span>Manual Save (Auto-save enabled)</span>
+
+                        <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; font-family: monospace; color: var(--accent); text-align: center; font-size: 0.7rem;">Enter</kbd>
+                        <span>Confirm Modal/Search</span>
+                    </div>
+                </div>
             </div>
-            <div class="modal-actions">
+            <div class="modal-actions" style="justify-content: space-between;">
+                <button class="modal-btn cancel" id="app-reset-btn" style="color: #EF4444; font-size: 0.8rem; padding: 0.5rem 0;">Reset All Settings</button>
                 <button class="modal-btn submit" id="settings-close">Close</button>
             </div>
         </div>
@@ -313,7 +314,7 @@
                 automaticLayout: true,
                 minimap: { enabled: false },
                 fontSize: 16,
-                fontFamily: "'Fira Code', 'Courier New', monospace",
+                fontFamily: "'Source Code Pro', monospace",
                 lineHeight: 24,
                 padding: { top: 20 },
                 scrollBeyondLastLine: false,
@@ -333,7 +334,6 @@
         const fontSizeVal = document.getElementById('font-size-val');
         const lineHeightSlider = document.getElementById('setting-line-height');
         const lineHeightVal = document.getElementById('line-height-val');
-        const fontFamilySelect = document.getElementById('setting-font-family');
 
         // Popovers
         const themeBtn = document.getElementById('toggle-themes');
@@ -341,23 +341,17 @@
         const fontBtn = document.getElementById('toggle-font-settings');
         const fontPopover = document.getElementById('font-popover');
 
-        // Font Family Logic
-        fontFamilySelect.addEventListener('change', (e) => {
-            const font = e.target.value;
-            if (editor) editor.updateOptions({ fontFamily: font });
-            if (term) term.options.fontFamily = font;
-            localStorage.setItem('ide-fontFamily', font);
-        });
+
 
 
 
         // Themes Configuration
         const themes = {
             dark: { monaco: 'vs-dark', term: { background: '#0f111a', foreground: '#f8f8f2', cursor: '#f8f8f2' } },
-            light: { class: 'light-theme', monaco: 'vs', term: { background: '#F0FDF4', foreground: '#064E3B', cursor: '#064E3B' } },
+            light: { class: 'light-theme', monaco: 'vs', term: { background: '#f8fafc', foreground: '#1f2937', cursor: '#6366f1' } },
             cyberpunk: { class: 'theme-cyberpunk', monaco: 'vs-dark', term: { background: '#020202', foreground: '#00f0ff', cursor: '#fdee00' } },
             tokyo: { class: 'theme-tokyo', monaco: 'vs-dark', term: { background: '#1a1b26', foreground: '#a9b1d6', cursor: '#bb9af7' } },
-            dracula: { class: 'theme-dracula', monaco: 'vs-dark', term: { background: '#282a36', foreground: '#f8f8f2', cursor: '#bd93f9' } },
+            oled: { class: 'theme-oled', monaco: 'vs-dark', term: { background: '#000000', foreground: '#FFFFFF', cursor: '#FFFFFF' } },
             retro: { class: 'theme-retro', monaco: 'vs-dark', term: { background: '#0c0c0c', foreground: '#ffb000', cursor: '#ffb000' } },
             ocean: { class: 'theme-ocean', monaco: 'vs-dark', term: { background: '#000814', foreground: '#e0f2fe', cursor: '#00ead3' } }
         };
@@ -389,6 +383,9 @@
             document.querySelectorAll('.theme-option').forEach(opt => {
                 opt.classList.toggle('active', opt.dataset.theme === themeKey);
             });
+
+            // Refresh editor layout after theme change
+            if (editor) editor.layout();
 
             // Persist
             localStorage.setItem('ide-theme', themeKey);
@@ -451,26 +448,19 @@
         // Terminal Toggle
         document.getElementById('toggle-terminal').addEventListener('click', () => {
             const termPane = document.querySelector('.output-pane');
-            const termContainer = document.getElementById('terminal-container');
-            const isClosing = !termPane.classList.contains('hidden');
-
-            if (isClosing) {
-                // Lock width before closing so text doesn't wrap
-                termContainer.style.width = termContainer.offsetWidth + 'px';
-            } else {
-                // Ensure it has a reasonable size while opening
-                termContainer.style.width = '800px';
-            }
-
             termPane.classList.toggle('hidden');
             localStorage.setItem('ide-terminalHidden', termPane.classList.contains('hidden'));
 
-            // Re-layout after animation finishes
+            // Use a higher-frequency pulse during the animation (400ms transition)
+            const interval = setInterval(() => {
+                if (editor) editor.layout();
+            }, 16); // ~60fps layout refresh
+            
             setTimeout(() => {
-                termContainer.style.width = '100%';
+                clearInterval(interval);
                 if (editor) editor.layout();
                 try { fitAddon.fit(); } catch (e) { }
-            }, 350);
+            }, 450);
         });
 
 
@@ -482,6 +472,17 @@
             document.getElementById('settings-modal').classList.remove('show');
         });
 
+        document.getElementById('app-reset-btn').addEventListener('click', async () => {
+            const confirm = await showModal("Are you sure? This will reset all themes, fonts, and workspace settings.", "", true);
+            if (confirm) {
+                // Clear all IDE-related localStorage
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith('ide-')) localStorage.removeItem(key);
+                });
+                window.location.reload();
+            }
+        });
+
         // Initialize xterm.js
         const term = new Terminal({
             theme: {
@@ -490,7 +491,7 @@
                 cursor: themes.dark.term.cursor,
                 selection: 'rgba(255, 255, 255, 0.3)'
             },
-            fontFamily: "'Fira Code', 'Courier New', monospace",
+            fontFamily: "'Source Code Pro', monospace",
             fontSize: 14,
             cursorBlink: true,
             lineHeight: 1.2,
@@ -499,7 +500,31 @@
         });
 
         // Persistence Initialization
-        function loadSavedSettings() {
+        async function loadSavedSettings() {
+            // Check for first-time use
+            const workspaceConfigured = localStorage.getItem('ide-workspaceConfigured');
+            if (!workspaceConfigured) {
+                const currentRes = await fetch('/api/workspace');
+                const currentData = await currentRes.json();
+                
+                const promptMsg = `Set your C Workspace:\n(Default: Downloads\\C Programs)`;
+                const path = await showModal(promptMsg, currentData.workspace);
+                
+                // Always proceed, server handles empty path by defaulting to Downloads
+                let finalPath = (path === null || path.trim() === "") ? "" : path;
+                finalPath = finalPath.replace(/"/g, '').trim(); // Smartly remove quotes on client-side too
+                
+                const res = await fetch('/api/workspace', { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ path: finalPath }) 
+                });
+                const data = await res.json();
+                if (data.success) {
+                    localStorage.setItem('ide-workspaceConfigured', 'true');
+                    loadFiles(); // Refresh files after setting workspace
+                }
+            }
             // Theme
             const savedTheme = localStorage.getItem('ide-theme') || 'dark';
             applyTheme(savedTheme);
@@ -514,9 +539,8 @@
             lineHeightSlider.value = savedLH;
             lineHeightVal.innerText = savedLH;
 
-            // Font Family
-            const savedFont = localStorage.getItem('ide-fontFamily') || "'Fira Code', monospace";
-            fontFamilySelect.value = savedFont;
+            // Font Family is now locked to Source Code Pro
+            const savedFont = "'Source Code Pro', monospace";
 
             // Auto Clear
             const savedAutoClear = localStorage.getItem('ide-autoClear');
@@ -546,6 +570,9 @@
                     });
                     monaco.editor.setTheme(themes[savedTheme].monaco);
                     if (term) term.options.fontFamily = savedFont;
+                    
+                    // Force a layout recalculation after font changes
+                    setTimeout(() => editor.layout(), 50);
 
                     // Recover Last Open File
                     const lastFile = localStorage.getItem('ide-lastFile');
@@ -582,7 +609,41 @@
         }, 200);
 
         // Handle window resize
-        window.addEventListener('resize', () => fitAddon.fit());
+        window.addEventListener('resize', () => {
+            try { fitAddon.fit(); } catch (e) {}
+            if (editor) editor.layout();
+        });
+
+        // ROBUST FIX: ResizeObserver on the editor container itself
+        // This catches dimension changes from ANY source (CSS, JS, Transitions, Sidebar)
+        const resizeObserver = new ResizeObserver(() => {
+            if (editor) {
+                editor.layout();
+            }
+        });
+        const editorContainer = document.getElementById('editor-container');
+        if (editorContainer) {
+            resizeObserver.observe(editorContainer);
+        }
+
+        // Detect when fonts are loaded and refresh layout multiple times
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(() => {
+                if (editor) {
+                    editor.layout();
+                    // Double check after 100ms
+                    setTimeout(() => editor.layout(), 100);
+                }
+            });
+        }
+
+        // Heartbeat fix: Ensure layout is perfect during initial load
+        let layoutCheckCount = 0;
+        const layoutPulse = setInterval(() => {
+            if (editor) editor.layout();
+            layoutCheckCount++;
+            if (layoutCheckCount > 10) clearInterval(layoutPulse); 
+        }, 500);
 
         term.writeln('Welcome to JzeroCompile C IDE! Ready to compile.\r\n> _');
 
@@ -609,6 +670,7 @@
             statusIndicator.innerText = 'Running';
             runBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="color:#EF4444;"><rect x="6" y="6" width="12" height="12"></rect></svg> Stop';
             runBtn.disabled = false;
+            if (term) term.focus();
         });
 
         socket.on('run_finished', (msg) => {
@@ -648,9 +710,14 @@
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('hidden');
 
-            setTimeout(() => {
+            const interval = setInterval(() => {
                 if (editor) editor.layout();
-            }, 350);
+            }, 16);
+            
+            setTimeout(() => {
+                clearInterval(interval);
+                if (editor) editor.layout();
+            }, 450);
         });
 
         // Global Keyboard Shortcuts
@@ -659,7 +726,44 @@
                 e.preventDefault();
                 document.getElementById('toggle-sidebar').click();
             }
+            if (e.ctrlKey && e.key.toLowerCase() === 's') {
+                e.preventDefault();
+                manualSave();
+            }
+            if (e.key === 'F5') {
+                e.preventDefault(); // Prevent browser refresh
+                document.getElementById('run-btn').click();
+            }
         });
+
+        async function manualSave() {
+            if (!currentFilePath || !editor) return;
+            const code = editor.getValue();
+            try {
+                const res = await fetch('/api/save', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path: currentFilePath, code })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    lastSavedContent = code;
+                    showSaveIndicator();
+                }
+            } catch (err) {
+                console.error("Save failed", err);
+            }
+        }
+
+        let saveIndicatorTimeout;
+        function showSaveIndicator() {
+            const el = document.getElementById('save-indicator');
+            el.classList.add('show');
+            clearTimeout(saveIndicatorTimeout);
+            saveIndicatorTimeout = setTimeout(() => {
+                el.classList.remove('show');
+            }, 2000);
+        }
 
         function showModal(title, defaultValue = '', isConfirm = false) {
             return new Promise((resolve) => {
@@ -747,13 +851,25 @@
                         
                         const nameWrap = document.createElement('div');
                         nameWrap.style.flex = 1;
-                        const folderIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>`;
-                        const fileIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>`;
+
+                        // Unified Icon Logic
+                        let iconColor = "#94A3B8"; 
+                        let iconContent = "";
                         
-                        nameWrap.innerHTML = (file.type === 'folder' ? folderIcon : fileIcon) + file.relPath + (file.contentMatch ? ' <span style="opacity:0.5;font-size:0.7em;">(in file)</span>' : '');
+                        if (file.type === 'folder') {
+                            iconColor = "#FBBF24"; // Amber
+                            iconContent = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${iconColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>`;
+                        } else {
+                            if (file.name.endsWith('.c')) iconColor = "#60A5FA"; // Blue
+                            else if (file.name.endsWith('.h')) iconColor = "#10B981"; // Green
+                            else if (file.name.endsWith('.txt')) iconColor = "#94A3B8"; // Slate
+                            
+                            iconContent = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${iconColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>`;
+                        }
+                        
+                        nameWrap.innerHTML = iconContent + file.relPath + (file.priority === 3 ? ' <span style="opacity:0.5;font-size:0.7em;">(in content)</span>' : '');
                         div.appendChild(nameWrap);
 
-                        // Use the actions helper
                         addFileActions(div, file);
 
                         div.onclick = () => {
@@ -778,7 +894,8 @@
                 if (data.success) {
                     await loadFiles();
                     if (type === 'file') {
-                        openFile(data.path, name);
+                        await openFile(data.path, name);
+                        if (editor) editor.focus();
                     }
                 } else {
                     alert("Error creating " + type + ": " + data.error);
@@ -862,21 +979,37 @@
             files.forEach(file => {
                 const div = document.createElement('div');
                 div.className = 'file-item';
-                div.style.paddingLeft = `${level * 15 + 10}px`;
+                const indent = level * 10 + 10;
+                div.style.setProperty('--indent', `${indent}px`);
+                div.style.paddingLeft = `${indent}px`;
                 div.title = file.path;
 
                 const nameWrap = document.createElement('div');
                 nameWrap.style.flex = 1;
-                const folderIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>`;
-                const fileIcon = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>`;
-                nameWrap.innerHTML = (file.type === 'folder' ? folderIcon : fileIcon) + file.name;
+
+                // Color-coded Icons
+                let iconColor = "#94A3B8"; // Default
+                let iconContent = "";
+                
+                if (file.type === 'folder') {
+                    iconColor = "#FBBF24"; // Amber
+                    iconContent = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${iconColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>`;
+                } else {
+                    if (file.name.endsWith('.c')) iconColor = "#60A5FA"; // Blue
+                    else if (file.name.endsWith('.h')) iconColor = "#10B981"; // Green
+                    else if (file.name.endsWith('.txt')) iconColor = "#94A3B8"; // Slate
+                    
+                    iconContent = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="${iconColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg>`;
+                }
+                
+                nameWrap.innerHTML = iconContent + file.name;
                 div.appendChild(nameWrap);
 
                 addFileActions(div, file);
 
-
                 if (file.type === 'folder') {
                     const childrenContainer = document.createElement('div');
+                    childrenContainer.className = 'folder-children';
                     const isOpen = openFolders.has(file.path);
                     childrenContainer.style.display = isOpen ? 'block' : 'none';
 
@@ -892,14 +1025,12 @@
                         localStorage.setItem('ide-openFolders', JSON.stringify([...openFolders]));
                     };
 
-
                     container.appendChild(div);
                     container.appendChild(childrenContainer);
                     renderTree(file.children, childrenContainer, level + 1, currentWorkspace);
                 } else {
                     div.onclick = async (e) => {
                         e.stopPropagation();
-                        // De-select previous item visuals
                         document.querySelectorAll('.file-item').forEach(el => el.classList.remove('active'));
                         div.classList.add('active');
                         openFile(file.path, file.relPath);
@@ -917,7 +1048,11 @@
             const contentRes = await fetch('/api/read', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ path: absolutePath }) });
             const contentData = await contentRes.json();
             if (contentData.success) {
-                if (editor) editor.setValue(contentData.content);
+                if (editor) {
+                    editor.setValue(contentData.content);
+                    lastSavedContent = contentData.content;
+                    editor.focus();
+                }
             }
         }
 
@@ -933,7 +1068,7 @@
                     headRow.style.padding = '5px 10px'; headRow.style.opacity = '0.5';
                     const newFileIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; cursor:pointer;" id="ws-add-f" title="New File"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>`;
                     const newFolderIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle; cursor:pointer; margin-left:8px;" id="ws-add-d" title="New Folder"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg>`;
-                    headRow.innerHTML = `<span style="flex:1">Workspace: ${data.workspace}</span> ${newFileIcon} ${newFolderIcon}`;
+                    headRow.innerHTML = `<span style="flex:1; font-weight: 700; font-size: 10px; opacity: 0.6; letter-spacing: 0.5px;">WORKSPACE</span> ${newFileIcon} ${newFolderIcon}`;
                     headRow.style.display = 'flex';
                     headRow.style.alignItems = 'center';
                     fileList.appendChild(headRow);
@@ -950,19 +1085,42 @@
 
         loadFiles();
 
-        // Auto-save currently opened file every 5 seconds
-        setInterval(async () => {
-            if (currentFilePath && editor) {
-                try {
-                    const code = editor.getValue();
-                    fetch('/api/save', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ path: currentFilePath, code })
-                    });
-                } catch (e) { }
+        let autoSaveTimeout;
+        let lastSavedContent = "";
+
+        // Smart Save: Only save if changed, and wait for 1.5s of "no typing"
+        function setupSmartSave() {
+            if (!editor) {
+                setTimeout(setupSmartSave, 100);
+                return;
             }
-        }, 5000);
+
+            editor.onDidChangeModelContent(() => {
+                const currentContent = editor.getValue();
+                if (currentContent === lastSavedContent) return; // Nothing new
+
+                clearTimeout(autoSaveTimeout);
+                autoSaveTimeout = setTimeout(async () => {
+                    if (currentFilePath) {
+                        try {
+                            const res = await fetch('/api/save', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ path: currentFilePath, code: currentContent })
+                            });
+                            const data = await res.json();
+                            if (data.success) {
+                                lastSavedContent = currentContent;
+                                showSaveIndicator();
+                                console.log("Changes safely auto-saved.");
+                            }
+                        } catch (e) { }
+                    }
+                }, 1500); 
+            });
+        }
+
+        setupSmartSave();
 
         runBtn.addEventListener('click', async () => {
             if (isRunning) {
@@ -972,16 +1130,23 @@
 
             const code = editor.getValue();
 
-            // Auto-save the currently opened file if any
             if (currentFilePath) {
-                try {
-                    await fetch('/api/save', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ path: currentFilePath, code })
-                    });
-                } catch (e) {
-                    console.error("Failed to save", e);
+                const code = editor.getValue();
+                if (code !== lastSavedContent) {
+                    try {
+                        const saveRes = await fetch('/api/save', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ path: currentFilePath, code })
+                        });
+                        const saveData = await saveRes.json();
+                        if (saveData.success) {
+                            lastSavedContent = code;
+                            showSaveIndicator();
+                        }
+                    } catch (e) {
+                        console.error("Failed to save", e);
+                    }
                 }
             }
 
@@ -994,7 +1159,7 @@
             statusIndicator.className = 'status running';
             statusIndicator.innerText = 'Building...';
 
-            socket.emit('compile_and_run', { code });
+            socket.emit('compile_and_run', { code, filePath: currentFilePath });
         });
 
         // Ripple Wave Effect

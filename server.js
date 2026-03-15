@@ -8,44 +8,83 @@ const path = require('path');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
-const PORT = 3000;
+const args = process.argv.slice(2);
+const portArg = args.findIndex(arg => arg === '--port' || arg === '-p');
+const PORT = portArg !== -1 && args[portArg + 1] ? parseInt(args[portArg + 1]) : 3000;
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
 // Portable Workspace Management
-const defaultWorkspace = path.join(process.env.USERPROFILE || process.env.HOME || 'C:', 'Documents', 'JzeroCompile');
-let currentWorkspace = 'D:\\VS\\C Files'; // Preferred user path
+const appDataPath = process.env.APPDATA || (process.platform === 'darwin' ? process.env.HOME + '/Library/Preferences' : process.env.HOME + '/.config');
+const configDir = path.join(appDataPath, 'JzeroCompiler');
+const configPath = path.join(configDir, 'config.json');
 
-// If the preferred path doesn't exist or we can't write to it, fallback to default
-if (!fs.existsSync(currentWorkspace)) {
-    currentWorkspace = defaultWorkspace;
+const downloadsPath = path.join(process.env.USERPROFILE || process.env.HOME || 'C:', 'Downloads');
+const defaultWorkspace = path.join(downloadsPath, 'C Programs');
+
+let currentWorkspace = defaultWorkspace;
+
+// Ensure config directory exists
+if (!fs.existsSync(configDir)) {
+    try { fs.mkdirSync(configDir, { recursive: true }); } catch(e) {}
 }
 
-// Ensure the directory exists
-try {
-    if (!fs.existsSync(currentWorkspace) || !fs.lstatSync(currentWorkspace).isDirectory()) {
-        fs.mkdirSync(currentWorkspace, { recursive: true });
+// Load persisted workspace if available
+if (fs.existsSync(configPath)) {
+    try {
+        const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+        if (config.workspace) {
+            // Even if it Doesn't exist, we keep it as the "intended" path and handle errors in file listing
+            currentWorkspace = config.workspace;
+        }
+    } catch (e) {
+        console.error("Failed to load config:", e);
     }
-} catch (e) {
-    currentWorkspace = path.join(process.env.TEMP, 'JzeroCompile');
-    if (!fs.existsSync(currentWorkspace)) fs.mkdirSync(currentWorkspace, { recursive: true });
 }
 
+function saveConfig() {
+    try {
+        if (!fs.existsSync(configDir)) fs.mkdirSync(configDir, { recursive: true });
+        fs.writeFileSync(configPath, JSON.stringify({ workspace: currentWorkspace }, null, 2));
+    } catch (e) {
+        console.error("Failed to save config:", e);
+    }
+}
 
+// Fallback: Ensure current workspace (at least the default one) exists
+if (!fs.existsSync(currentWorkspace)) {
+    try { fs.mkdirSync(currentWorkspace, { recursive: true }); } catch(e) {}
+}
 
 app.get('/api/workspace', (req, res) => {
     res.json({ success: true, workspace: currentWorkspace });
 });
 
 app.post('/api/workspace', (req, res) => {
-    const newDir = req.body.path;
-    if (fs.existsSync(newDir)) {
-        currentWorkspace = newDir;
-        res.json({ success: true, workspace: currentWorkspace });
-    } else {
-        res.json({ success: false, error: 'Directory does not exist' });
+    let newDir = req.body.path;
+    
+    // Smartly interpret path: remove quotes if the user pasted it from Windows "Copy as Path"
+    if (newDir) {
+        newDir = newDir.replace(/"/g, '').trim();
     }
+
+    // Default to Downloads if none provided
+    if (!newDir || newDir === "") {
+        newDir = defaultWorkspace;
+    }
+
+    if (!fs.existsSync(newDir)) {
+        try {
+            fs.mkdirSync(newDir, { recursive: true });
+        } catch(e) {
+            return res.json({ success: false, error: 'Could not create directory: ' + e.message });
+        }
+    }
+    
+    currentWorkspace = newDir;
+    saveConfig(); // Persist the new choice
+    res.json({ success: true, workspace: currentWorkspace });
 });
 
 app.get('/api/files', (req, res) => {
@@ -65,11 +104,26 @@ app.get('/api/files', (req, res) => {
             }
         } catch (e) { }
 
-        // Sort: files first, then folders, both alphabetically
+        // Sort: folders first, then files by priority (C files > headers > text)
         results.sort((a, b) => {
             if (a.type !== b.type) {
-                return a.type === 'file' ? -1 : 1;
+                return a.type === 'folder' ? -1 : 1;
             }
+            
+            // For files, further prioritize based on extension
+            if (a.type === 'file') {
+                const getPriority = (name) => {
+                    const ext = name.toLowerCase().split('.').pop();
+                    if (ext === 'c') return 1;
+                    if (ext === 'h') return 2;
+                    if (ext === 'txt') return 3;
+                    return 4;
+                };
+                const pA = getPriority(a.name);
+                const pB = getPriority(b.name);
+                if (pA !== pB) return pA - pB;
+            }
+            
             return a.name.localeCompare(b.name);
         });
 
@@ -80,9 +134,7 @@ app.get('/api/files', (req, res) => {
 
 app.post('/api/search', (req, res) => {
     const query = req.body.query.toLowerCase();
-    let fileMatches = [];
-    let folderMatches = [];
-    let contentMatches = [];
+    let results = [];
 
     function searchDir(dir) {
         try {
@@ -95,21 +147,17 @@ app.post('/api/search', (req, res) => {
 
                 if (stat.isDirectory() && file !== '.git' && file !== 'node_modules') {
                     if (file.toLowerCase().includes(query)) {
-                        folderMatches.push({ name: file, relPath, path: filePath, type: 'folder' });
+                        results.push({ name: file, relPath, path: filePath, type: 'folder', priority: 1 });
                     }
                     searchDir(filePath);
                 } else if (stat.isFile() && (file.endsWith('.c') || file.endsWith('.h') || file.endsWith('.txt'))) {
-                    let matchedName = false;
                     if (file.toLowerCase().includes(query)) {
-                        fileMatches.push({ name: file, relPath, path: filePath, type: 'file' });
-                        matchedName = true;
-                    }
-
-                    if (!matchedName) {
+                        results.push({ name: file, relPath, path: filePath, type: 'file', priority: 2 });
+                    } else {
                         try {
                             const content = fs.readFileSync(filePath, 'utf8');
                             if (content.toLowerCase().includes(query)) {
-                                contentMatches.push({ name: file, relPath, path: filePath, type: 'file', contentMatch: true });
+                                results.push({ name: file, relPath, path: filePath, type: 'file', contentMatch: true, priority: 3 });
                             }
                         } catch (e) { }
                     }
@@ -119,8 +167,12 @@ app.post('/api/search', (req, res) => {
     }
     searchDir(currentWorkspace);
 
-    // Combine matches in requested order: file names > folder names > file contents
-    const results = [...fileMatches, ...folderMatches, ...contentMatches];
+    // Sort: Folders > File Names > Content Matches, then alphabetical
+    results.sort((a, b) => {
+        if (a.priority !== b.priority) return a.priority - b.priority;
+        return a.name.localeCompare(b.name);
+    });
+
     res.json({ success: true, results });
 });
 
@@ -211,12 +263,22 @@ io.on('connection', (socket) => {
 
     socket.on('compile_and_run', (data) => {
         const code = data.code;
-        const filePath = path.join(__dirname, 'temp.c');
-        const exePath = path.join(__dirname, 'temp.exe');
+        const clientFilePath = data.filePath; // Path from client (may be null)
+        
+        let workingDir = __dirname;
+        let sourcePath = path.join(__dirname, 'temp.c');
+        let exePath = path.join(__dirname, 'temp.exe');
 
-        // Remove old executable
+        if (clientFilePath) {
+            workingDir = path.dirname(clientFilePath);
+            const fileName = path.basename(clientFilePath, '.c');
+            sourcePath = path.join(workingDir, `_run_${fileName}.c`); // Temp file for injection
+            exePath = path.join(workingDir, `${fileName}.exe`);
+        }
+
+        // Remove old executable from the target path
         if (fs.existsSync(exePath)) {
-            fs.unlinkSync(exePath);
+            try { fs.unlinkSync(exePath); } catch (e) {}
         }
 
         let sourceCode = code;
@@ -226,14 +288,19 @@ io.on('connection', (socket) => {
             return match + '\n    setvbuf(stdout, NULL, _IONBF, 0);\n    setvbuf(stderr, NULL, _IONBF, 0);\n';
         });
 
-        // Write code to temp.c
-        fs.writeFileSync(filePath, sourceCode);
+        // Write injected code to the temp source path
+        fs.writeFileSync(sourcePath, sourceCode);
 
         socket.emit('output', 'Compiling...\r\n');
 
         // Compile using GCC
-        const compileCmd = `C:\\MinGW\\bin\\gcc.exe "${filePath}" -o "${exePath}"`;
-        exec(compileCmd, (err, stdout, stderr) => {
+        const compileCmd = `C:\\MinGW\\bin\\gcc.exe "${sourcePath}" -o "${exePath}"`;
+        exec(compileCmd, { cwd: workingDir }, (err, stdout, stderr) => {
+            // Clean up the temp runner file immediately after compile starts/fails
+            if (clientFilePath && fs.existsSync(sourcePath)) {
+                try { fs.unlinkSync(sourcePath); } catch (e) {}
+            }
+
             if (err || (stderr && !fs.existsSync(exePath))) {
                 socket.emit('compile_error', stderr || (err ? err.message : 'Unknown compilation error'));
                 return;
@@ -246,8 +313,8 @@ io.on('connection', (socket) => {
             socket.emit('run_started');
             socket.emit('output', '\x1b[32mRunning...\x1b[0m\r\n-----------------------\r\n');
 
-            // Spawn the executable
-            currentProcess = spawn(exePath);
+            // Spawn the executable in its directory
+            currentProcess = spawn(exePath, [], { cwd: workingDir });
 
             currentProcess.stdout.on('data', (data) => {
                 resetActivityTimeout();
@@ -296,6 +363,20 @@ io.on('connection', (socket) => {
     });
 });
 
+server.on('error', (e) => {
+    if (e.code === 'EADDRINUSE') {
+        console.log(`Port ${PORT} is already in use. Likely another instance is running.`);
+    } else {
+        console.error("Server error:", e);
+    }
+});
+
 server.listen(PORT, () => {
     console.log(`God Tier C Compiler UI with dynamic IO running at http://localhost:${PORT}`);
+    
+    // Auto-open browser in standalone mode (only if not running in Electron)
+    if (!process.versions.electron) {
+        const start = (process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'start' : 'xdg-open');
+        exec(`${start} http://localhost:${PORT}`);
+    }
 });

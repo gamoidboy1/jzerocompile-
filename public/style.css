@@ -11,16 +11,13 @@
 
 
 body.light-theme {
-    --bg-main: #F8FAFC;
-    /* Softer Slate-based white */
-    --bg-panel: rgba(255, 255, 255, 0.85);
-    --border: rgba(100, 116, 139, 0.1);
-    --accent: #059669;
-    /* Muted Emerald */
-    --accent-hover: #047857;
-    --text-primary: #1E293B;
-    /* Slate-800 instead of deep green */
-    --text-secondary: #64748B;
+    --bg-main: #f3f4f6;
+    --bg-panel: rgba(255, 255, 255, 0.7);
+    --border: rgba(0, 0, 0, 0.06);
+    --accent: #6366f1; /* Soft Indigo */
+    --accent-hover: #4f46e5;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
     --run-btn-text: #FFFFFF;
 }
 
@@ -66,16 +63,35 @@ body.theme-tokyo {
 }
 
 
-/* Dracula */
-body.theme-dracula {
-    --bg-main: #282a36;
-    --bg-panel: rgba(68, 71, 90, 0.6);
-    --border: #44475a;
-    --accent: #bd93f9;
-    --accent-hover: #ff79c6;
-    --text-primary: #f8f8f2;
-    --text-secondary: #6272a4;
-    --run-btn-text: #282a36;
+/* OLED Luxe (Pure Black & High Contrast) */
+body.theme-oled {
+    --bg-main: #000000;
+    --bg-panel: #000000;
+    --border: #1E293B;
+    --accent: #FFFFFF;
+    --accent-hover: #94A3B8;
+    --text-primary: #FFFFFF;
+    --text-secondary: #64748B;
+    --run-btn-text: #000000;
+}
+
+body.theme-oled .glass-panel {
+    background: #000000;
+    border: 1px solid #1E293B;
+    box-shadow: none;
+}
+
+body.theme-oled #app-logo {
+    filter: invert(1) brightness(1.5);
+}
+
+body.theme-oled #change-workspace-btn {
+    color: #FFFFFF !important;
+}
+
+body.theme-oled #file-search {
+    background: #000000 !important;
+    border-color: #1E293B !important;
 }
 
 
@@ -107,8 +123,8 @@ body.theme-ocean {
 
 body.light-theme {
     background-image:
-        radial-gradient(circle at 15% 50%, rgba(100, 116, 139, 0.05), transparent 25%),
-        radial-gradient(circle at 85% 30%, rgba(5, 150, 105, 0.05), transparent 25%);
+        radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.05), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.05), transparent 25%);
 }
 
 
@@ -137,7 +153,7 @@ body.light-theme .file-item:hover {
 body.light-theme .file-item.active,
 body.theme-cyberpunk .file-item.active,
 body.theme-tokyo .file-item.active,
-body.theme-dracula .file-item.active,
+body.theme-oled .file-item.active,
 body.theme-retro .file-item.active,
 body.theme-ocean .file-item.active {
     opacity: 1;
@@ -286,12 +302,13 @@ body.light-theme .icon-btn:hover {
 }
 
 .sidebar {
-    width: 250px;
+    width: 260px;
     display: flex;
     flex-direction: column;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 1;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .sidebar.hidden {
@@ -299,6 +316,7 @@ body.light-theme .icon-btn:hover {
     opacity: 0;
     margin-right: -1.5rem;
     pointer-events: none;
+    transform: translateX(-20px);
 }
 
 .main-content {
@@ -314,18 +332,19 @@ body.light-theme .icon-btn:hover {
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-width: 250px;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 300px;
+    transition: flex 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     opacity: 1;
     overflow: hidden;
 }
 
 .output-pane.hidden {
-    flex: 0;
+    flex: 0.0001; /* Using near-zero for better flex animation */
     min-width: 0;
     opacity: 0;
     pointer-events: none;
     margin-left: -1.5rem;
+    transform: translateX(20px);
 }
 
 .file-list {
@@ -354,9 +373,37 @@ body.light-theme .icon-btn:hover {
 }
 
 .file-item.active {
-    background: rgba(59, 130, 246, 0.15);
-    color: var(--accent);
-    font-weight: 600;
+    background: rgba(59, 130, 246, 0.2);
+    color: white;
+    border-left: 3px solid var(--accent);
+    padding-left: calc(var(--indent) - 3px) !important;
+}
+
+/* Tree Hierarchy Lines */
+.folder-children {
+    position: relative;
+    margin-left: 20px; /* Aligns with the icon above */
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+}
+
+.file-item {
+    position: relative;
+    padding: 6px 10px;
+}
+
+.file-item::before {
+    content: "";
+    position: absolute;
+    left: -10px;
+    top: 50%;
+    width: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: none; /* Can enable for horizontal lines if desired */
+}
+
+.file-list {
+    padding-left: 5px !important;
 }
 
 .glass-panel {
@@ -577,7 +624,7 @@ body.light-theme .icon-btn:hover {
 
 .modal-btn.submit {
     background: var(--accent);
-    color: white;
+    color: var(--run-btn-text);
 }
 
 .modal-btn.submit:hover {
@@ -751,4 +798,41 @@ body.light-theme .popover input[type="range"] {
 .delete-btn:hover {
     opacity: 1;
     filter: drop-shadow(0 0 5px #EF4444);
+}
+
+.save-indicator {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: rgba(16, 185, 129, 0.1);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+    color: #34D399;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.save-indicator.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.save-indicator::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    background: #34D399;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 5px #34D399;
 }

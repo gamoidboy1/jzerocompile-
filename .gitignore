@@ -6,3 +6,4 @@ temp.exe
 build_log.txt
 build_log_v2.txt
 .DS_Store
+node_modules

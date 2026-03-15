@@ -1,30 +1,36 @@
-# JzeroCompile IDE 🚀
+# JzeroCompiler IDE 🚀
 
-JzeroCompile is a high-performance, aesthetically stunning C Compiler IDE built with a "God Tier" user experience in mind. It is a lightweight, visual GUI alternative to heavy IDEs like Visual Studio, designed specifically for speed and simplicity.
+JzeroCompiler is a high-performance, aesthetically stunning C Compiler IDE built with a "God Tier" user experience in mind. It is a lightweight, visual GUI alternative to heavy IDEs like VS Code, designed specifically for speed and simplicity.
 
-## ✨ Why JzeroCompile?
+## ✨ Why JzeroCompiler?
 
 ### 🔋 Extreme Resource Efficiency
-While heavy IDEs like **Visual Studio** can consume upwards of **2000MB (2GB) of RAM**, JzeroCompile runs at a lightning-fast **230MB**. That is **~90% less resource usage**, making it the perfect choice for students and developers who want a smooth, lag-free coding experience without slowing down their PC.
+While heavy IDEs like **VS Code** can consume upwards of **1200MB (1.2GB) of RAM**, JzeroCompiler runs at a lightning-fast **300MB at max**. That is **~75% less resource usage**, making it the perfect choice for students and developers who want a smooth, lag-free coding experience without slowing down their PC.
 
-### 🎓 Designed for B.Tech Students
-Setting up C environments in "Vital Studios" (Visual Studio) or complex IDEs can be a nightmare for engineering students. JzeroCompile removes the mess:
+### 🎓 Designed for C Developers
+Setting up C environments in VS Code or complex IDEs can be a nightmare for engineering students. JzeroCompiler removes the mess:
 - **Zero Configuration**: No complex project files or linker settings.
-- **Instant Setup**: Specifically designed for students learning C programming to focus on code, not settings.
+- **Workspace Persistence**: Remembers your workspace path even after restart.
 - **Glassmorphic UI**: A premium, modern design that makes coding feel like the future.
+- **Interactive Background**: Beautiful ripple wave effects that respond to your touch.
 
 ## ✨ Key Features
 
-- **90% Lighter**: Massive performance gains over traditional IDEs.
+- **75% Lighter**: Massive performance gains over traditional IDEs.
 - **Real-time Terminal**: Interactive terminal with bidirectional communication.
 - **Monaco Editor**: Powered by the same engine as VS Code for world-class syntax highlighting.
-- **7 Premium Themes**: Midnight Glow, Tokyo Night, Cyberpunk, and more.
+- **7 Premium Themes**: Midnight Glow, Nordic White (Redesigned), Tokyo Night, Cyberpunk 2077, Oled Luxe, Retro Amber, and Oceanic Abyss.
 - **Smart Compilation**: Auto-injects common C fixes (like output buffering) so your `printf` works perfectly every time.
+- **Smart Auto-save**: Safely saves your work with a 1.5s debounce.
+- **Customizable Typography**: Control font size and line spacing for better readability.
 
 ## 🎨 Theme Gallery
 
 ### Midnight Glow (Default)
 ![Midnight Glow](showcase/midnight_glow.png)
+
+### Nordic White
+![Nordic White](showcase/nordic_white.png)
 
 ### Tokyo Night
 ![Tokyo Night](showcase/tokyo_night.png)
@@ -38,21 +44,21 @@ Setting up C environments in "Vital Studios" (Visual Studio) or complex IDEs can
 - **Frontend**: Vanilla JS, Monaco Editor, Xterm.js
 - **Compiler**: GCC (MinGW)
 
-## 🚀 Getting Started (Node.js Version)
+## 🚀 How to Run
+### 1. Standalone Version (Recommended)
+Just double-click **`JzeroCompiler.exe`**. 
+- **NO Node.js required.**
+- Open-and-use experience.
+- Automatically launches the IDE in your default browser.
 
-To get this running properly on your system, follow these simple steps:
+### 2. Desktop App Version (Electron)
+Located in `dist/JzeroCompiler-win32-x64/`, run **`JzeroCompiler.exe`** for a dedicated window experience.
 
-1. **Install Node.js**: Download and install it from [nodejs.org](https://nodejs.org/).
-2. **Install GCC**: Ensure you have MinGW installed at `C:\MinGW\`.
-3. **Install Dependencies**: Open your terminal in the project folder and run:
-   ```bash
-   npm install
-   ```
-4. **Run the App**:
-   ```bash
-   node server.js
-   ```
-5. **Access the IDE**: Open `http://localhost:3000` in your browser and start coding!
+### 3. Developer / Node.js Version
+If you want to modify the code:
+1. **Install Node.js**: [nodejs.org](https://nodejs.org/).
+2. **Install Dependencies**: `npm install`.
+3. **Run**: `node server.js` or `npm start`.
 
 ---
 Developed with ❤️ for B.Tech students and developers who want a beautiful, lightweight coding experience.

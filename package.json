@@ -1,13 +1,20 @@
 {
-  "name": "god-c-compiler",
+  "name": "jzerocompiler",
   "version": "1.0.0",
-  "description": "God Tier Light UI for C Compiler",
+  "description": "JzeroCompiler",
   "author": "Jzero",
   "main": "main.js",
   "scripts": {
     "start": "node server.js",
     "app": "electron .",
-    "build": "electron-builder build --win"
+    "pack": "electron-packager . JzeroCompiler --platform=win32 --arch=x64 --out=\"../PROJECT BUILDS\" --overwrite --icon=public/assets/logo.ico --prune=true --asar --ignore=\"^/build($|/)\" --ignore=\"^/README\\.md$\" --ignore=\"^/Start_JzeroCompile\\.bat$\" --ignore=\"^/\\.gitignore$\"",
+    "build": "electron-builder build --win",
+    "build-exe": "npx pkg server.js --assets \"public/**/*\" --targets node18-win-x64 --output JzeroCompiler.exe"
+  },
+  "pkg": {
+    "assets": [
+      "public/**/*"
+    ]
   },
   "dependencies": {
     "express": "^4.18.2",
@@ -15,23 +22,29 @@
     "split.js": "^1.6.5"
   },
   "build": {
-    "appId": "com.jzero.compile",
-    "productName": "JzeroCompile",
+    "appId": "com.jzero.compiler",
+    "productName": "JzeroCompiler",
     "directories": {
-      "output": "dist"
+      "output": "build"
     },
     "win": {
       "target": "portable",
-      "icon": "public/assets/logo.png"
+      "icon": "public/assets/logo.png",
+      "artifactName": "${productName}.${ext}",
+      "publish": null
     },
     "files": [
       "**/*",
-      "!dist/*"
+      "!build/*",
+      "!dist/*",
+      "!*.ps1",
+      "!*.bat",
+      "!README.md"
     ]
   },
   "devDependencies": {
-    "electron": "^40.8.0",
-    "electron-builder": "^26.8.1",
+    "electron": "^34.0.0",
+    "electron-builder": "^25.0.0",
     "electron-packager": "^17.1.2"
   }
 }
